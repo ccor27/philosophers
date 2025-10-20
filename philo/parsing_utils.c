@@ -28,7 +28,7 @@ int  ft_isdigit(char c)
  * 3)for limits (max_int)
  * 	3.1) filter for the len of th string, if len > 10 for sure is more than int_max
  */
-const char *ft_skip_no_digits(char *s)
+const char *ft_skip_no_digits(const char *s)
 {
 	int len;
 	const char *number;
@@ -39,12 +39,12 @@ const char *ft_skip_no_digits(char *s)
 	if(*s=='+')
 		s++;
 	else if(*s=='-')
-		error_exit("Only positive number allowed");
+		ft_error_exit("Only positive number allowed");
 	number = s;//we now are in the position of the first number
 	while(ft_isdigit(*s++))
 		len++;
 	if(len>10)
-		error_exit("Number is too big (INT_MAX is the limit)");
+		ft_error_exit("Number is too big (INT_MAX is the limit)");
 	return (number);
 }
 
@@ -60,7 +60,7 @@ long ft_atol(const char *s)
 	s = ft_skip_no_digits(s);
 	while(ft_isdigit(*s))
 		num = (num * 10) + (*s++ - 48);
-	if(num > INT_MAX)
-		error_exit("Number is too big (INT_MAX is the limit)");
+	if(num > 2147483647)
+		ft_error_exit("Number is too big (INT_MAX is the limit)");
 	return (num);
 }
