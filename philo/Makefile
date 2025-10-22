@@ -1,6 +1,7 @@
 NAME=philo
 
-SRC= philo.c	parsing_utils.c	parsing.c	utils.c
+SRC= philo.c	parsing_utils.c	parsing.c	utils.c	\
+		clean_up.c
 
 OBJ_DIR = obj
 OBJ= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))

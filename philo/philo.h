@@ -9,6 +9,21 @@
 # include <unistd.h>   //write, usleep
 # include <limits.h>
 
+//================== enum and structs =====================
+//enum  to handle the operations of a pthread
+typedef enum e_code
+{
+		//pthread options
+		CREATE,
+		JOIN,
+		DETEACH,
+		INIT,
+		//mutex options
+		DESTROY,
+		LOCK,
+		UNLOCK,
+}		t_code;
+
 // struct to represent a fork
 typedef struct s_fork
 {
@@ -44,7 +59,7 @@ typedef struct s_data
 	t_philo *philos;       // array of the philos we have
 }					t_data;
 
-// functions
+//================== functions prototipes =====================
 void				ft_error_exit(const char *msg);
 // parsing.c
 void				ft_parse_and_store(t_data *data, char **argv);
