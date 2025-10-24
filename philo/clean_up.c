@@ -7,6 +7,10 @@ void	ft_error_exit(const char *msg)
 	exit(EXIT_FAILURE);
 }
 
+
+/**
+ * Functio to free memory allocated and exit the project
+ */
 void	ft_free_and_exit(const char *msg, t_data *data)
 {
 	if (!data)

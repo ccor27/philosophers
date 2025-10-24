@@ -21,3 +21,4 @@ void    handle_mutexes(pthread_mutex_t *mutex, t_code option)
     //TODO: if I decided implement the logic like this, I should 
     // send the data too in order to clean, free and exit safately
 }
+

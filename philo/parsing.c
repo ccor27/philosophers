@@ -71,8 +71,10 @@ void	ft_init_philos(t_data *data)
 	{
 		data->philos[i].id = (i + 1);
 		data->philos[i].meals_counter = 0;
-		data->start_simulation = 0;
-		data->end_simulation = 0;
-		// TODO: create a function to assing the forks
+		data->start_simulation = 0;//this should be in the function of philo cycle
+		data->end_simulation = 0;//this should be in the function of philo cycle
+		//assing the forks
+		data->philos[i].left_fork = &data->forks[i];
+		data->philos[i].right_fork = &data->forks[(i+1)%data->philo_number];
 	}
 }
