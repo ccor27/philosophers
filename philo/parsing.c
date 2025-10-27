@@ -18,6 +18,8 @@ void	ft_parse_and_store(t_data *data, char **argv)
 		data->number_of_meals = ft_atol(argv[5]);
 	else
 		data->number_of_meals = -1;
+	data->end_simulation = -1;
+	data->reason_simulation_end = 0;
 }
 
 /**
@@ -49,9 +51,8 @@ void	ft_init_forks(t_data *data)
 	while (i < data->philo_number)
 	{
 		data->forks[i].fork_id = (i + 1);
-		if (pthread_mutex_init(&data->forks[i].mutex, NULL) != 0)
-			ft_free_and_exit("Failed to initialize mutex", data);
-				// TODO: create a function to free memory
+		if (ft_handle_mutexes(data,&data->forks[i].mutex,INIT) != 0)
+			ft_free_and_exit(NULL, data);
 		i++;
 	}
 }
@@ -67,14 +68,14 @@ void	ft_init_philos(t_data *data)
 	if (!data->philos)
 		ft_free_and_exit("Failed to allocate memory for forks", data);
 	i = 0;
+	data->start_simulation = ft_get_time_in_ms();//this should be in the function of philo cycle
 	while (i < data->philo_number)
 	{
 		data->philos[i].id = (i + 1);
 		data->philos[i].meals_counter = 0;
-		data->start_simulation = 0;//this should be in the function of philo cycle
-		data->end_simulation = 0;//this should be in the function of philo cycle
 		//assing the forks
 		data->philos[i].left_fork = &data->forks[i];
 		data->philos[i].right_fork = &data->forks[(i+1)%data->philo_number];
+		//create the thread
 	}
 }
