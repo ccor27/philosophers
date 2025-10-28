@@ -54,6 +54,7 @@ int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
 /**
  * Function to get the current time
  * of the system
+ * TODO: is this correct??
  */
 long	ft_get_time_in_ms(void)
 {
