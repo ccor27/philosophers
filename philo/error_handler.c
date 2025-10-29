@@ -61,6 +61,5 @@ void	ft_handle_thread_error(t_code action, int result_code)
 		reason_str = "Deadlock detected (joining self)";
 	else if (result_code == 3)
 		reason_str = "Thread does not exist";
-
 	printf("Thread error [%s]: %s\n", action_str, reason_str);
 }

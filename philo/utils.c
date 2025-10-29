@@ -19,9 +19,11 @@ int	ft_handle_mutexes(t_data *data,pthread_mutex_t *mutex, t_code action)
 		result = pthread_mutex_unlock(mutex);
 	if (result != 0)
 	{
-		ft_handle_mutex_error(action, result);
+		pthread_mutex_lock(&data->data_mtx);
         data->end_simulation = 1;
-        data->reason_simulation_end = 1;
+        ft_handle_mutex_error(action, result);
+		pthread_mutex_unlock(&data->data_mtx);
+
 	}
 	return (result);
 }
@@ -44,9 +46,10 @@ int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
 		result = pthread_detach(*thread);
 	if (result != 0)
 	{
-		ft_handle_thread_error(action, result);
+		pthread_mutex_lock(&data->data_mtx);
         data->end_simulation = 1;
-        data->reason_simulation_end = 2;
+		ft_handle_thread_error(action, result);
+		pthread_mutex_unlock(&data->data_mtx);
 	}
 	return (result);
 }
