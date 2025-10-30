@@ -37,7 +37,7 @@ void	ft_free_forks(t_data *data)
 	free(data->forks);
 	data->forks = NULL;
 }
-
+//TODO: finihs
 void	ft_free_philos(t_data *data)
 {
 	int	i;

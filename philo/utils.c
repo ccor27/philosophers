@@ -68,3 +68,45 @@ long	ft_get_time_in_ms(void)
 	time_in_ms = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	return (time_in_ms);
 }
+/**
+ * Function to print the action that each philo does
+ */
+void    ft_print_action(t_data *data,t_philo *philo, t_code code)
+{
+        ft_handle_mutexes(data, &data->print_mtx, LOCK);
+		if(code == THINKING)
+            printf("%d, philo %d is thinking", ft_get_time_in_ms(), philo->id);
+        else if(code == EATING)
+            printf("%d, philo %d is eating", ft_get_time_in_ms(), philo->id);
+        else if(code == SLEEPING)
+            printf("%d, philo %d is sleeping", ft_get_time_in_ms(), philo->id);
+        else
+            printf("%d, philo %d has taken a fork", ft_get_time_in_ms(), philo->id);
+        ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
+}
+
+/**
+ * Function that will be used in the ft_philo_cycle
+ * basically to validate in which moment each philo
+ * need to stop their process.
+ * If any of philos have died or a philo is full, 
+ * the cycle should stop.
+ */
+int	ft_should_stop(t_data *data, t_philo *philo)
+{
+	int flag;
+
+	flag = 0;
+	ft_handle_mutexes(data,&data->data_mtx,LOCK);
+	if(data->end_simulation = 1)
+		flag = 1;
+	ft_handle_mutexes(data,&data->data_mtx,UNLOCK);
+	if(!flag)
+	{
+		ft_handle_mutexes(data,&philo->data_mtx,LOCK);
+		if(philo->is_full)
+			flag = 1;
+		ft_handle_mutexes(data,&philo->data_mtx,UNLOCK);
+	}
+	return (flag);
+}

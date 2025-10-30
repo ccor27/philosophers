@@ -3,20 +3,30 @@
 // function hadle the cycle of each philo
 void	ft_philo_cycle(t_philo *philo, t_data *data)
 {
-	long	current;
-	long	elapsed;
-
-	current = ft_get_time_in_ms();
-	elapsed = current - data->start_simulation;
-	// to have the time when a philo do the action
-	// validate if any philo has died, if it so exit
-	// 1)start thinking
-	// validate if any philo has died, if it so exit
-	// 2)pickup the forks if they are avaiable
-	// validate if any philo has died, if it so exit
-	// 3)start eating
-	// 4)releasae forks and start to sleep
-	// 5)repeate all the process
+	while (1)
+	{
+		data->start_simulation = ft_get_time_in_ms();
+		// take  forka
+		if (ft_should_stop(data,philo))
+			break ;
+		ft_lock_forks(data, philo, LOCK);
+		if (ft_should_stop(data,philo))
+			break ;
+		// eat
+		ft_eat(data, philo);
+		if (ft_should_stop(data,philo))
+			break ;
+		// release forks
+		ft_lock_forks(data, philo, UNLOCK);
+		if (ft_should_stop(data,philo))
+			break ;
+		// think
+		ft_think(data, philo);
+		if (ft_should_stop(data,philo))
+			break ;
+		// sleep
+		ft_sleep(data, philo);
+	}
 }
 
 /**
@@ -66,29 +76,13 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 		{
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
-            ft_handle_mutexes(data, &data->print_mtx, LOCK);
+			ft_handle_mutexes(data, &data->print_mtx, LOCK);
 			printf("%d, philo %d died", ft_get_time_in_ms(), philo->id);
-            ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
+			ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 			return (1);
 		}
 		i++;
-	}   
+	}
 	return (0);
-}
-/**
- * Function to print the action that each philo does
- */
-void    ft_print_action(t_data *data,t_philo *philo, t_code code)
-{
-        ft_handle_mutexes(data, &data->print_mtx, LOCK);
-		if(code == THINKING)
-            printf("%d, philo %d is thinking", ft_get_time_in_ms(), philo->id);
-        else if(code == EATING)
-            printf("%d, philo %d is eating", ft_get_time_in_ms(), philo->id);
-        else if(code == SLEEPING)
-            printf("%d, philo %d is sleeping", ft_get_time_in_ms(), philo->id);
-        else
-            printf("%d, philo %d has taken a fork", ft_get_time_in_ms(), philo->id);
-        ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 }

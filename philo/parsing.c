@@ -70,14 +70,15 @@ void	ft_init_philos(t_data *data)
 		philo = &data->philos[i];
 		philo->id = (i + 1);
 		philo->meals_counter = 0;
+		philo->is_full = 0;
 		philo->time_last_meal = data->start_simulation; //?
 		philo->data = data;
 		if (ft_handle_mutexes(data, &philo->data_mtx, INIT) != 0)
 			ft_free_and_exit(NULL, data);
 		philo->left_fork = &data->forks[i];
 		philo->right_fork = &data->forks[(i + 1) % data->philo_number];
-		if (ft_handle_thread(&data->philos[i].thread_id, &ft_philo_starter,
-				philo, CREATE, data) != 0)
+		if (ft_handle_thread(philo->thread_id, &ft_philo_starter, philo, CREATE,
+				data) != 0)
 			ft_free_and_exit(NULL, data);
 		i++;
 	}
