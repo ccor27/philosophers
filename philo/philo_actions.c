@@ -7,16 +7,20 @@
  */
 void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code)
 {
+	//printf("in the ft_lock_unlock_forks, before the validation\n");
 	if (philo->id % 2 == 0)
 	{
-		ft_handle_mutexes(data, philo->left_fork, code);
-		ft_handle_mutexes(data, philo->right_fork, code);
+		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
+		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
 	}
 	else
 	{
-		ft_handle_mutexes(data, philo->right_fork, code);
-		ft_handle_mutexes(data, philo->left_fork, code);
+		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
+		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
 	}
+	if(code == LOCK)
+		ft_print_action(data,philo,TAKING);
+	//printf("in the ft_lock_unlock_forks, after the validation\n");
 }
 /**
  * Function to handle the action of eating for each
@@ -55,6 +59,6 @@ void    ft_think(t_data *data, t_philo *philo)
  */
 void    ft_sleep(t_data *data, t_philo *philo)
 {
-    ft_print_action(data,philo,THINKING);
+    ft_print_action(data,philo,SLEEPING);
     usleep(data->time_to_sleep);
 }

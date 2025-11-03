@@ -3,7 +3,7 @@
 void	ft_error_exit(const char *msg)
 {
 	if (msg)
-		printf(msg);
+		printf("%s",msg);
 	exit(EXIT_FAILURE);
 }
 
@@ -19,6 +19,7 @@ void	ft_free_and_exit(const char *msg, t_data *data)
 		ft_free_forks(data);
 	if (data->philos)
 		ft_free_philos(data);
+	ft_error_exit(msg);
 }
 /**
  * Function to destroy fork's mutexes

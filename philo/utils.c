@@ -1,4 +1,4 @@
-#include "philo.c"
+#include "philo.h"
 
 /**
  * Function to handle safately the different actions
@@ -9,10 +9,11 @@ int	ft_handle_mutexes(t_data *data,pthread_mutex_t *mutex, t_code action)
 	int	result;
 
 	result = 0;
+//	printf("in the ft_handle_mutexes, before the validation\n");
 	if (action == INIT)
 		result = pthread_mutex_init(mutex, NULL);
 	else if (action == DESTROY)
-		result = pthread_attr_destroy(mutex);
+		result = pthread_mutex_destroy(mutex);
 	else if (action == LOCK)
 		result = pthread_mutex_lock(mutex);
 	else if (action == UNLOCK)
@@ -25,6 +26,7 @@ int	ft_handle_mutexes(t_data *data,pthread_mutex_t *mutex, t_code action)
 		pthread_mutex_unlock(&data->data_mtx);
 
 	}
+//	printf("in the ft_handle_mutexes, after the validation\n");
 	return (result);
 }
 
@@ -75,13 +77,13 @@ void    ft_print_action(t_data *data,t_philo *philo, t_code code)
 {
         ft_handle_mutexes(data, &data->print_mtx, LOCK);
 		if(code == THINKING)
-            printf("%d, philo %d is thinking", ft_get_time_in_ms(), philo->id);
+            printf("\033[32m%ld, philo %d is thinking\033[0m\n", ft_get_time_in_ms(), philo->id);
         else if(code == EATING)
-            printf("%d, philo %d is eating", ft_get_time_in_ms(), philo->id);
+            printf("\033[33m%ld, philo %d is eating\033[0m\n", ft_get_time_in_ms(), philo->id);
         else if(code == SLEEPING)
-            printf("%d, philo %d is sleeping", ft_get_time_in_ms(), philo->id);
+            printf("\033[34m%ld, philo %d is sleeping\033[0m\n", ft_get_time_in_ms(), philo->id);
         else
-            printf("%d, philo %d has taken a fork", ft_get_time_in_ms(), philo->id);
+            printf("\033[36m%ld, philo %d has taken a fork\033[0m\n", ft_get_time_in_ms(), philo->id);
         ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 }
 
@@ -98,7 +100,7 @@ int	ft_should_stop(t_data *data, t_philo *philo)
 
 	flag = 0;
 	ft_handle_mutexes(data,&data->data_mtx,LOCK);
-	if(data->end_simulation = 1)
+	if(data->end_simulation == 1)
 		flag = 1;
 	ft_handle_mutexes(data,&data->data_mtx,UNLOCK);
 	if(!flag)

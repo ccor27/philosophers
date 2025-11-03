@@ -10,6 +10,7 @@
 #include <unistd.h>	  //write, usleep
 
 //================== enum and structs =====================
+typedef struct s_philo t_philo;
 // enum  to handle the operations of a pthread
 typedef enum e_code
 {
@@ -40,21 +41,6 @@ typedef struct s_fork
 	pthread_mutex_t mutex;
 } t_fork;
 
-// struct to represent a philo
-typedef struct s_philo
-{
-	int id;
-	long meals_counter;
-	int is_full;
-	long time_last_meal;	  // to determine if a philo died between meals
-	pthread_mutex_t data_mtx; // mutex to control race condition
-	t_fork *left_fork;		  // left fork that the philo could use
-	t_fork *right_fork;		  // right fork that the philo could use
-	pthread_t thread_id;	  // beacuse the philo is a thread
-	t_data *data;			  // Pointer back to the global data struct
-
-} t_philo;
-
 // struct where we'll store the global data
 typedef struct s_data
 {
@@ -68,18 +54,34 @@ typedef struct s_data
 	long end_simulation;	   // to know when a philo dies or all are full, initially -1
 	pthread_mutex_t data_mtx; //mutex to avoid race condition in data
 	pthread_mutex_t print_mtx; //mutex to manage the actions prints
+	pthread_t monitor;
 	// TODO: create a variable to the monitor, it should be a pthread
 	t_fork *forks;	 // array of the forks we have
 	t_philo *philos; // array of the philos we have
 } t_data;
 
+// struct to represent a philo
+struct s_philo
+{
+	int id;
+	long meals_counter;
+	int is_full;
+	long time_last_meal;	  // to determine if a philo died between meals
+	pthread_mutex_t data_mtx; // mutex to control race condition
+	t_fork *left_fork;		  // left fork that the philo could use
+	t_fork *right_fork;		  // right fork that the philo could use
+	pthread_t thread_id;	  // beacuse the philo is a thread
+	t_data *data;			  // Pointer back to the global data struct
+
+};
+
 //================== functions prototipes =====================
-void ft_error_exit(const char *msg);
 // parsing.c
 void ft_parse_and_store(t_data *data, char **argv);
 void ft_init_data(t_data *data);
 void ft_init_philos(t_data *data);
-
+void	*ft_philo_starter(void *arg);
+void	ft_join_threads(t_data *data);
 // parsing_utils.c
 int ft_isspace(char c);
 int ft_isdigit(char c);
@@ -107,4 +109,8 @@ void	ft_eat(t_data *data, t_philo *philo);
 void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code);
 void    ft_think(t_data *data, t_philo *philo);
 void    ft_sleep(t_data *data, t_philo *philo);
+//philo_process
+void	ft_philo_cycle(t_philo *philo, t_data *data);
+void	*ft_monitor_process(void *arg);
+int	ft_check_philo_death(t_data *data, long time_to_die);
 #endif

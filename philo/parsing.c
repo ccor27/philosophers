@@ -53,6 +53,7 @@ void	ft_init_data(t_data *data)
 
 /**
  * Function to initialize the philos
+ * //TODO: I've changed the i = 0 to i = -1
  */
 void	ft_init_philos(t_data *data)
 {
@@ -77,11 +78,32 @@ void	ft_init_philos(t_data *data)
 			ft_free_and_exit(NULL, data);
 		philo->left_fork = &data->forks[i];
 		philo->right_fork = &data->forks[(i + 1) % data->philo_number];
-		if (ft_handle_thread(philo->thread_id, &ft_philo_starter, philo, CREATE,
+		if (ft_handle_thread(&philo->thread_id, &ft_philo_starter, philo, CREATE,
 				data) != 0)
 			ft_free_and_exit(NULL, data);
 		i++;
 	}
+	if (ft_handle_thread(&data->monitor, &ft_monitor_process, data, CREATE, data) != 0)
+        ft_free_and_exit("Failed to create monitor thread", data);
+	ft_join_threads(data);
+}
+
+void	ft_join_threads(t_data *data)
+{
+	int  i;
+	t_philo *philo;
+
+	i = 0;
+	ft_handle_thread(&data->monitor, NULL, NULL, JOIN,
+				data);
+	while (i < data->philo_number)
+	{
+		philo = &data->philos[i];
+		ft_handle_thread(&philo->thread_id, NULL, NULL, JOIN,
+				data);
+				i++;
+	}
+	
 }
 
 /**
@@ -92,9 +114,15 @@ void	*ft_philo_starter(void *arg)
 {
 	t_philo *philo;
 	t_data *data;
+//	int i;
 
+//	i = 0;
 	philo = (t_philo *)arg;
 	data = philo->data;
+//	while (i < data->philo_number && (data->philos[i].thread_id > 0))
+//		i++;
+	
+//	printf("number of philos created: %d\n",i);
 	ft_philo_cycle(philo, data);
 	return (NULL);
 }
