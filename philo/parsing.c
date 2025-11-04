@@ -8,11 +8,11 @@
 void	ft_parse_and_store(t_data *data, char **argv)
 {
 	data->philo_number = ft_atol(argv[1]);
-	data->time_to_die = ft_atol(argv[2]) * 1000;
-	data->time_to_eat = ft_atol(argv[3]) * 1000;
-	data->time_to_sleep = ft_atol(argv[4]) * 1000;
-	if (data->time_to_die < 60000 || data->time_to_eat < 60000
-		|| data->time_to_sleep < 60000)
+	data->time_to_die = ft_atol(argv[2]) ;
+	data->time_to_eat = ft_atol(argv[3]) ;
+	data->time_to_sleep = ft_atol(argv[4]) ;
+	if (data->time_to_die < 60 || data->time_to_eat < 60
+		|| data->time_to_sleep < 60)
 		ft_error_exit("The timestamps should be grather than 60ms");
 	if (argv[5])
 		data->number_of_meals = ft_atol(argv[5]);
@@ -20,7 +20,31 @@ void	ft_parse_and_store(t_data *data, char **argv)
 		data->number_of_meals = -1;
 	data->end_simulation = -1;
 }
+// static void ft_show_data(t_data *data)
+// {
+// 	 if (!data)
+//         return;
 
+//     printf("philo_number: %ld\n", data->philo_number);
+//     printf("time_to_die: %ld\n", data->time_to_die);
+//     printf("time_to_eat: %ld\n", data->time_to_eat);
+//     printf("time_to_sleep: %ld\n", data->time_to_sleep);
+//     printf("number_of_meals: %ld\n", data->number_of_meals);
+//     printf("start_simulation: %ld\n", data->start_simulation);
+//     printf("end_simulation: %ld\n", data->end_simulation);
+
+// 	int i;
+
+// 	i = 0;
+// 	while (i < data->philo_number)
+// 	{
+// 		printf("the philo : %d\n",data->philos[i].id);
+// 		printf("the right fork : %d\n",data->philos[i].right_fork->fork_id);
+// 		printf("the left fork : %d\n\n",data->philos[i].left_fork->fork_id);
+// 		i++;
+// 	}
+	
+// }
 /**
  * Function to initialize the structs
  * forks and philos
@@ -49,6 +73,7 @@ void	ft_init_data(t_data *data)
 	}
 	// init philos
 	ft_init_philos(data);
+	//ft_show_data(data);
 }
 
 /**
@@ -76,14 +101,16 @@ void	ft_init_philos(t_data *data)
 		philo->data = data;
 		if (ft_handle_mutexes(data, &philo->data_mtx, INIT) != 0)
 			ft_free_and_exit(NULL, data);
-		philo->left_fork = &data->forks[i];
-		philo->right_fork = &data->forks[(i + 1) % data->philo_number];
+		philo->right_fork = &data->forks[i];
+		philo->left_fork = &data->forks[(i + 1) % data->philo_number];
 		if (ft_handle_thread(&philo->thread_id, &ft_philo_starter, philo, CREATE,
+				data) != 0)
+		if (ft_handle_thread(&philo->thread_id, NULL, philo, CREATE,
 				data) != 0)
 			ft_free_and_exit(NULL, data);
 		i++;
 	}
-	if (ft_handle_thread(&data->monitor, &ft_monitor_process, data, CREATE, data) != 0)
+	if (ft_handle_thread(&data->monitor, &ft_monitor_starter, data, CREATE, data) != 0)
         ft_free_and_exit("Failed to create monitor thread", data);
 	ft_join_threads(data);
 }
@@ -125,4 +152,12 @@ void	*ft_philo_starter(void *arg)
 //	printf("number of philos created: %d\n",i);
 	ft_philo_cycle(philo, data);
 	return (NULL);
+}
+
+void	*ft_monitor_starter(void *arg)
+{
+	t_data *data;
+	data = (t_data *)arg;
+	ft_monitor_process(data);
+	return(NULL);
 }

@@ -39,7 +39,7 @@ void	ft_eat(t_data *data, t_philo *philo)
 			philo->is_full = 1;
 	}
     ft_handle_mutexes(data,&philo->data_mtx,UNLOCK);
-    usleep(data->time_to_eat);
+    usleep(data->time_to_eat * 1000);
 }
 
 /**
@@ -60,5 +60,5 @@ void    ft_think(t_data *data, t_philo *philo)
 void    ft_sleep(t_data *data, t_philo *philo)
 {
     ft_print_action(data,philo,SLEEPING);
-    usleep(data->time_to_sleep);
+    usleep(data->time_to_sleep * 1000);
 }

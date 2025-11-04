@@ -82,6 +82,7 @@ void ft_init_data(t_data *data);
 void ft_init_philos(t_data *data);
 void	*ft_philo_starter(void *arg);
 void	ft_join_threads(t_data *data);
+void	*ft_monitor_starter(void *arg);
 // parsing_utils.c
 int ft_isspace(char c);
 int ft_isdigit(char c);
@@ -111,6 +112,6 @@ void    ft_think(t_data *data, t_philo *philo);
 void    ft_sleep(t_data *data, t_philo *philo);
 //philo_process
 void	ft_philo_cycle(t_philo *philo, t_data *data);
-void	*ft_monitor_process(void *arg);
+void	ft_monitor_process(t_data *data);
 int	ft_check_philo_death(t_data *data, long time_to_die);
 #endif

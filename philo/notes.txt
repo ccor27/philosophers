@@ -6,3 +6,11 @@
                       THINGS TO HAVE IN MIND OR INVESTIGATE
 - is the order of parameters right? it seems that the order of them in the evl sheet is  different
 - it seems that the ft_check_philo_death never find a philo died, I have to review that, specially the workflow of the philo process and monitor!
+- validate that in each time ft_handle_threads/mutexes throw an error, free memory
+- when use the detach of threads??
+- when a philo dies, maybe others are wating for mutex release??
+    but if I have just one philo?
+- problems with the synchronization of the threads and monitor
+    - somethings works others not 
+    - see why after the monitor detects that a philo dies it keep wating 
+       for something

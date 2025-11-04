@@ -3,14 +3,10 @@
 // function hadle the cycle of each philo
 void	ft_philo_cycle(t_philo *philo, t_data *data)
 {
+	if (philo->id % 2 != 0)
+    	usleep(100);
 	while (1)
 	{
-		if (philo->id % 2 != 0)
-    		usleep(100);
-		//printf("first line in the while in ft_philo_cycle\n");
-	//	ft_handle_mutexes(data,&philo->data_mtx,LOCK);
-	//	data->start_simulation = ft_get_time_in_ms();
-	//	ft_handle_mutexes(data,&philo->data_mtx,UNLOCK);
 		// take  forka
 		if (ft_should_stop(data,philo))
 		{
@@ -47,22 +43,21 @@ void	ft_philo_cycle(t_philo *philo, t_data *data)
 		// sleep
 		ft_sleep(data, philo);
 	}
+	printf("out of the while in ft_philo_cycle");
 }
 
 /**
  * Principal function to monitor if any philo has
  * died by hungry
  */
-void	*ft_monitor_process(void *arg)
+void	ft_monitor_process(t_data *data)
 {
-	t_data *data;
-
-	data = (t_data *)arg;
+	printf("out of the while (before start) in ft_monitor_process\n");
 	while (1)
 	{
 		//printf("in the while of ft_monitor_process\n");	
 		ft_handle_mutexes(data, &data->data_mtx, LOCK);
-		if (data->end_simulation != -1)
+		if (data->end_simulation == 1)
 		{
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 			printf("end_simuation has: %ld\n",data->end_simulation);	
@@ -70,10 +65,13 @@ void	*ft_monitor_process(void *arg)
 		}
 		ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 		if (ft_check_philo_death(data, data->time_to_die))
-			return(NULL);
+		{
+			printf("the ft_check_philo_death return 1\n");
+			break;
+		}			
 		usleep(1000);
 	}
-	return(NULL);
+	printf("out of the while in ft_monitor_process\n");
 }
 
 /**
@@ -88,7 +86,6 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 
 	philo = NULL;
 	i = 0;
-	//printf("in the ft_check_philo_death\n");
 	while (i < data->philo_number)
 	{
 		philo = &data->philos[i];
@@ -100,7 +97,7 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
 			ft_handle_mutexes(data, &data->print_mtx, LOCK);
-			printf("\033[41m%ld, philo %d died[0m\n", ft_get_time_in_ms(), philo->id);
+			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time_in_ms(), philo->id);
 			ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 			return (1);

@@ -15,6 +15,6 @@ int	main(int argc, char **argv)
 	//3) make the simulation
 	//dinner(&data);
 	//4) clean data and exist, no leaks when all philos are full or a philo dies
-	//clean_up(&data)
+	//TODO: free memory
 	return (0);
 }
