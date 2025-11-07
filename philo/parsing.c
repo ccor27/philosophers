@@ -5,19 +5,23 @@
  * into data struct
  * ./philo 5 800 200 200 [5]
  */
-void	ft_parse_and_store(t_data *data, char **argv)
+//TODO: validate is the value of the number of meals is < 0
+void	ft_parse_and_store(int argc, t_data *data, char **argv)
 {
 	data->philo_number = ft_atol(argv[1]);
 	data->time_to_die = ft_atol(argv[2]) ;
 	data->time_to_eat = ft_atol(argv[3]) ;
 	data->time_to_sleep = ft_atol(argv[4]) ;
+	data->number_of_meals = -1;
+	if(argc == 6)
+		data->number_of_meals = ft_atol(argv[5]);
+	if(data->philo_number == 0)
+		ft_error_exit("The number of philos must be > 1\n");
 	if (data->time_to_die < 60 || data->time_to_eat < 60
 		|| data->time_to_sleep < 60)
-		ft_error_exit("The timestamps should be grather than 60ms");
-	if (argv[5])
-		data->number_of_meals = ft_atol(argv[5]);
-	else
-		data->number_of_meals = -1;
+		ft_error_exit("The timestamps should be grather than 60ms\n");
+	if (data->number_of_meals < -1)
+			ft_error_exit("The number of meals must be >=0 \n");
 	data->end_simulation = -1;
 }
 // static void ft_show_data(t_data *data)
@@ -141,15 +145,8 @@ void	*ft_philo_starter(void *arg)
 {
 	t_philo *philo;
 	t_data *data;
-//	int i;
-
-//	i = 0;
 	philo = (t_philo *)arg;
 	data = philo->data;
-//	while (i < data->philo_number && (data->philos[i].thread_id > 0))
-//		i++;
-	
-//	printf("number of philos created: %d\n",i);
 	ft_philo_cycle(philo, data);
 	return (NULL);
 }

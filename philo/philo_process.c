@@ -1,13 +1,20 @@
 #include "philo.h"
 
+/*
+The Deadlock Analogy: The issue isn't that the monitor's exit causes the hang;
+ the hang happens because a philosopher thread gets stuck in a blocking 
+ state (like waiting for a mutex) and never reaches the 
+ exit check (ft_should_stop). The main thread then waits forever for that 
+ stuck philosopher to join.
+ */
 // function hadle the cycle of each philo
 void	ft_philo_cycle(t_philo *philo, t_data *data)
 {
 	if (philo->id % 2 != 0)
-    	usleep(100);
+    	usleep((data->time_to_eat / 2) * 1000);//the others wait half time to grab forks
 	while (1)
 	{
-		// take  forka
+		//TODO: make the get fork process independently
 		if (ft_should_stop(data,philo))
 		{
 			printf("in the if of ft_should_stop before take forks\n");
@@ -16,6 +23,7 @@ void	ft_philo_cycle(t_philo *philo, t_data *data)
 		ft_lock_unlock_forks(data, philo, LOCK);
 		if (ft_should_stop(data,philo))
 		{
+			ft_lock_unlock_forks(data, philo, UNLOCK);
 			printf("in the if of ft_should_stop after take forks\n");
 			break ;
 		}
@@ -66,10 +74,11 @@ void	ft_monitor_process(t_data *data)
 		ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 		if (ft_check_philo_death(data, data->time_to_die))
 		{
+			//TODO: here is a deadlock!!
 			printf("the ft_check_philo_death return 1\n");
 			break;
 		}			
-		usleep(1000);
+		usleep(500);
 	}
 	printf("out of the while in ft_monitor_process\n");
 }

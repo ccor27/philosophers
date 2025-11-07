@@ -77,7 +77,7 @@ struct s_philo
 
 //================== functions prototipes =====================
 // parsing.c
-void ft_parse_and_store(t_data *data, char **argv);
+void ft_parse_and_store(int argc, t_data *data, char **argv);
 void ft_init_data(t_data *data);
 void ft_init_philos(t_data *data);
 void	*ft_philo_starter(void *arg);

@@ -101,13 +101,19 @@ int	ft_should_stop(t_data *data, t_philo *philo)
 	flag = 0;
 	ft_handle_mutexes(data,&data->data_mtx,LOCK);
 	if(data->end_simulation == 1)
+	{
 		flag = 1;
+		printf("a philo has died! (ft_should_stop)");
+	}
 	ft_handle_mutexes(data,&data->data_mtx,UNLOCK);
 	if(!flag)
 	{
 		ft_handle_mutexes(data,&philo->data_mtx,LOCK);
 		if(philo->is_full)
+		{
 			flag = 1;
+			printf("the philo %d, is full! (ft_should_stop)",philo->id);
+		}
 		ft_handle_mutexes(data,&philo->data_mtx,UNLOCK);
 	}
 	return (flag);

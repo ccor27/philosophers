@@ -30,7 +30,7 @@ void	ft_eat(t_data *data, t_philo *philo)
 {
     ft_handle_mutexes(data,&philo->data_mtx,LOCK);
     philo->time_last_meal = ft_get_time_in_ms();
-	philo->meals_counter++;
+	//philo->meals_counter++;
 	ft_print_action(data, philo, EATING);
 
 	if (data->number_of_meals != -1)
