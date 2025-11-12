@@ -5,22 +5,30 @@
  * time a philo will eat ot finish of eat.
  * This was designed in order to avoid deadlock.
  */
-void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code)
+// void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code)
+// {
+// 	//printf("in the ft_lock_unlock_forks, before the validation\n");
+// 	if (philo->id % 2 == 0)
+// 	{
+// 		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
+// 		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
+// 	}
+// 	else
+// 	{
+// 		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
+// 		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
+// 	}
+// 	if(code == LOCK)
+// 		ft_print_action(data,philo,TAKING);
+// 	//printf("in the ft_lock_unlock_forks, after the validation\n");
+// }
+
+int	ft_fork_action(t_data *data, t_philo * philo, t_code code)
 {
-	//printf("in the ft_lock_unlock_forks, before the validation\n");
-	if (philo->id % 2 == 0)
-	{
-		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
-		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
-	}
+	if(philo->id%2==0)
+		return (ft_handle_mutexes(data, &philo->left_fork->mutex, code));
 	else
-	{
-		ft_handle_mutexes(data, &philo->right_fork->mutex, code);
-		ft_handle_mutexes(data, &philo->left_fork->mutex, code);
-	}
-	if(code == LOCK)
-		ft_print_action(data,philo,TAKING);
-	//printf("in the ft_lock_unlock_forks, after the validation\n");
+		return (ft_handle_mutexes(data, &philo->right_fork->mutex, code));
 }
 /**
  * Function to handle the action of eating for each
@@ -44,7 +52,7 @@ void	ft_eat(t_data *data, t_philo *philo)
 
 /**
  * Function to handle the case when a philo is
- * thinking, that basically is just 
+ * thinking, that basically is just
  * set the thread to sleep
  */
 void    ft_think(t_data *data, t_philo *philo)
@@ -54,7 +62,7 @@ void    ft_think(t_data *data, t_philo *philo)
 
 /**
  * Function to handle the case when a philo is
- * sleeping, that basically is just 
+ * sleeping, that basically is just
  * set the thread to sleep
  */
 void    ft_sleep(t_data *data, t_philo *philo)

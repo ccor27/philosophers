@@ -31,7 +31,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(call LOADING_BAR_COMP_PHILO)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -pthread  # <--- THIS IS TO WORK IN HOUSE
 
 $(OBJ_DIR)/%.o : %.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@

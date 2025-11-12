@@ -29,7 +29,7 @@ void	ft_handle_mutex_error(t_code action, int result_code)
 		reason_str = "deadlock detected (mutex already locked by this thread)";
 	else if (result_code == 12)
 		reason_str = "not enough memory to initialize mutex";
-	printf("Mutex error [%u]: %s", action, reason_str);
+	printf("Mutex error [%s]: %s", action_str, reason_str);
 }
 
 /**

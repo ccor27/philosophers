@@ -96,9 +96,8 @@ void ft_free_philos(t_data *data);
 // utils.c
 int ft_handle_mutexes(t_data *data, pthread_mutex_t *mutex,
 					  t_code action);
-int ft_handle_thread(pthread_t *thread,
-					 void *(*routine)(void *), void *arg, t_code op,
-					 t_data *data);
+int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
+		t_code action, t_data *data);
 long ft_get_time_in_ms(void);
 void    ft_print_action(t_data *data,t_philo *philo, t_code code);
 int		ft_should_stop(t_data *data, t_philo *philo);
@@ -107,7 +106,8 @@ void ft_handle_mutex_error(t_code action, int result_code);
 void ft_handle_thread_error(t_code action, int result_code);
 //philo_actions.c
 void	ft_eat(t_data *data, t_philo *philo);
-void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code);
+//void	ft_lock_unlock_forks(t_data *data, t_philo *philo, t_code code);
+int	ft_fork_action(t_data *data, t_philo * philo, t_code code);
 void    ft_think(t_data *data, t_philo *philo);
 void    ft_sleep(t_data *data, t_philo *philo);
 //philo_process
