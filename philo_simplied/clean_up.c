@@ -37,14 +37,28 @@ void	ft_free_forks(t_data *data)
 	}
 	free(data->forks);
 	data->forks = NULL;
+	if(&data->data_mtx)
+		pthread_mutex_destroy(&data->data_mtx);
+	if (&data->print_mtx)
+		pthread_mutex_destroy(&data->print_mtx);
+
 }
 //TODO: finihs
 void	ft_free_philos(t_data *data)
 {
 	int	i;
+	t_philo *philo;
 
 	i = 0;
+	philo=NULL;
 	while (i < data->philo_number)
 	{
+		philo=&data->philos[i];
+		pthread_mutex_destroy(&philo->data_mtx);
+        i++;
 	}
+	free(data->philos);
+    data->philos = NULL;
+	if(data->monitor)
+		pthread_mutex_destroy(&data->monitor);
 }

@@ -1,0 +1,5 @@
+Command to get the outputs that match in order to know if the number of meals was corrected
+ ./philo 5 800 200 200 7 | grep -e "1 is eating" -e "2 is eating" -e "3 is eating" -e "4 is eating" -e "5 is eating"
+
+
+
