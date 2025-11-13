@@ -1,63 +1,68 @@
 #include "philo.h"
 
-int ft_routine(pthread_mutex_t *f1_mtx,pthread_mutex_t *f2_mtx,t_philo *philo, t_data *data)
+/**
+ * Function to handle the philo routine
+ * basically here we validate before each action
+ * if the routine should stop, it should stop if any
+ * philo died or all are full, in addition we block
+ * the fork each time a philo takes it
+ */
+int	ft_routine(pthread_mutex_t *f1_mtx, pthread_mutex_t *f2_mtx, t_philo *philo,
+		t_data *data)
 {
-	if (ft_should_stop(data, philo)) 
-		return(1);
-    ft_handle_mutexes(data, f1_mtx, LOCK);
-    ft_print_action(data, philo, TAKING); // Log first fork
-    if (ft_should_stop(data, philo)) 
+	if (ft_should_stop(data, philo))
+		return (1);
+	ft_handle_mutexes(data, f1_mtx, LOCK);
+	ft_print_action(data, philo, TAKING);
+	if (ft_should_stop(data, philo))
 	{
-         ft_handle_mutexes(data, f1_mtx, UNLOCK); // MUST Release F1!
-        return(1);
-    }
-    ft_handle_mutexes(data, f2_mtx, LOCK);
-    ft_print_action(data, philo, TAKING); // Log second fork
-    ft_eat(data, philo); 
-    ft_handle_mutexes(data, f1_mtx, UNLOCK); // Release F1
-    ft_handle_mutexes(data, f2_mtx, UNLOCK); // Release F2
-    if (ft_should_stop(data, philo))
-		return(1);
-    ft_think(data, philo);     
-    if (ft_should_stop(data, philo))
-		return(1);
-    ft_sleep(data, philo); 
+		ft_handle_mutexes(data, f1_mtx, UNLOCK);
+		return (1);
+	}
+	ft_handle_mutexes(data, f2_mtx, LOCK);
+	ft_print_action(data, philo, TAKING);
+	ft_eat(data, philo);
+	ft_handle_mutexes(data, f1_mtx, UNLOCK);
+	ft_handle_mutexes(data, f2_mtx, UNLOCK);
+	if (ft_should_stop(data, philo))
+		return (1);
+	ft_think(data, philo);
+	if (ft_should_stop(data, philo))
+		return (1);
+	ft_sleep(data, philo);
 	return (0);
 }
 
-/*
-The Deadlock Analogy: The issue isn't that the monitor's exit causes the hang;
- the hang happens because a philosopher thread gets stuck in a blocking 
- state (like waiting for a mutex) and never reaches the 
- exit check (ft_should_stop). The main thread then waits forever for that 
- stuck philosopher to join.
+/**
+ * Function to handle the life cycle of a philo
+ * Basically here we assign the forks to the philo,
+ * depending if its positions, then if the position
+ * of the philo is odd, we send it to sleep in order to
+ * avoid all take forks and make a deadlock, after that
+ * do the philo's routine
  */
-// function hadle the cycle of each philo
 void	ft_philo_cycle(t_philo *philo, t_data *data)
 {
-	pthread_mutex_t *f1_mtx;
-    pthread_mutex_t *f2_mtx;
-    
-    if (philo->id % 2 == 0) // Even: Left then Right
-    {
-        f1_mtx = &philo->left_fork->mutex;
-        f2_mtx = &philo->right_fork->mutex;
-    }
-    else // Odd: Right then Left
-    {
-        f1_mtx = &philo->right_fork->mutex;
-        f2_mtx = &philo->left_fork->mutex;
-    }
-	// if (data->philo_number == 1)
-	// 	ft_handle_one_philo()
-    if (philo->id % 2 == 0)
-        usleep((data->time_to_eat / 2) * 1000);
-    while (1)
-    {
-        if(ft_routine(f1_mtx,f2_mtx,philo,data))
-			break;
-    }
-	
+	pthread_mutex_t	*f1_mtx;
+	pthread_mutex_t	*f2_mtx;
+
+	if (philo->id % 2 == 0)
+	{
+		f1_mtx = &philo->left_fork->mutex;
+		f2_mtx = &philo->right_fork->mutex;
+	}
+	else
+	{
+		f1_mtx = &philo->right_fork->mutex;
+		f2_mtx = &philo->left_fork->mutex;
+	}
+	if (philo->id % 2 == 0)
+		usleep((data->time_to_eat / 2) * 1000);
+	while (1)
+	{
+		if (ft_routine(f1_mtx, f2_mtx, philo, data))
+			break ;
+	}
 }
 
 /**
@@ -66,34 +71,27 @@ void	ft_philo_cycle(t_philo *philo, t_data *data)
  */
 void	ft_monitor_process(t_data *data)
 {
-	printf("out of the while (before start) in ft_monitor_process\n");
 	while (1)
 	{
-		//printf("in the while of ft_monitor_process\n");	
 		ft_handle_mutexes(data, &data->data_mtx, LOCK);
 		if (data->end_simulation == 1)
 		{
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
-			printf("end_simuation has: %ld\n",data->end_simulation);	
-			break;
+			printf("end_simuation has: %ld\n", data->end_simulation);
+			break ;
 		}
 		ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
-		if(data->number_of_meals!=-1 && ft_check_all_full(data))
+		if (data->number_of_meals != -1 && ft_check_all_full(data))
 		{
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
-			break;
+			break ;
 		}
 		if (ft_check_philo_death(data, data->time_to_die))
-		{
-			//TODO: here is a deadlock!!
-			printf("the ft_check_philo_death return 1\n");
-			break;
-		}			
-		usleep(500);
+			break ;
+		usleep(1000);
 	}
-	printf("out of the while in ft_monitor_process\n");
 }
 
 /**
@@ -106,20 +104,20 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 	long	time_since_last_meal;
 	t_philo	*philo;
 
-	philo = NULL;
 	i = 0;
 	while (i < data->philo_number)
 	{
 		philo = &data->philos[i];
 		ft_handle_mutexes(data, &philo->data_mtx, LOCK);
-		time_since_last_meal = ft_get_time_in_ms() - philo->time_last_meal;
+		time_since_last_meal = ft_get_time() - philo->time_last_meal;
 		ft_handle_mutexes(data, &philo->data_mtx, UNLOCK);
 		if (time_since_last_meal > time_to_die)
 		{
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
 			ft_handle_mutexes(data, &data->print_mtx, LOCK);
-			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time_in_ms(), philo->id);
+			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time(),
+				philo->id);
 			ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 			return (1);

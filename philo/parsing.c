@@ -67,7 +67,7 @@ void	ft_init_philos(t_data *data)
 	if (!data->philos)
 		ft_free_and_exit("Failed to allocate memory for forks", data);
 	i = 0;
-	data->start_simulation = ft_get_time_in_ms();
+	data->start_simulation = ft_get_time();
 	philo = NULL;
 	while (i < data->philo_number)
 	{

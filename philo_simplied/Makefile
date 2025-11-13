@@ -1,7 +1,7 @@
 NAME=philo
 
-SRC= philo.c	parsing_utils.c	parsing.c	utils.c	\
-		clean_up.c error_handler.c  philo_actions.c philo_process.c
+SRC= clean_up.c parsing_utils.c philo_actions.c philo_handler.c \
+		philo_parse_init.c philo_process.c philo.c utils.c
 
 OBJ_DIR = obj
 OBJ= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
@@ -31,7 +31,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(call LOADING_BAR_COMP_PHILO)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -pthread  # <--- THIS IS TO WORK IN HOUSE
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) #-pthread <--- THIS IS TO WORK IN HOUSE
 
 $(OBJ_DIR)/%.o : %.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@

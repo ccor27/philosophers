@@ -1,67 +1,34 @@
 #include "philo.h"
 
 /**
- * Function to handle safately the different actions
- * we can do to a mutex
+ * Wrapper function to start the threads correctly
+ * and call the function that each one will use
  */
-int	ft_handle_mutexes(t_data *data,pthread_mutex_t *mutex, t_code action)
+void	*ft_philo_starter(void *arg)
 {
-	int	result;
+	t_philo	*philo;
+	t_data	*data;
 
-	result = 0;
-//	printf("in the ft_handle_mutexes, before the validation\n");
-	if (action == INIT)
-		result = pthread_mutex_init(mutex, NULL);
-	else if (action == DESTROY)
-		result = pthread_mutex_destroy(mutex);
-	else if (action == LOCK)
-		result = pthread_mutex_lock(mutex);
-	else if (action == UNLOCK)
-		result = pthread_mutex_unlock(mutex);
-	if (result != 0)
-	{
-		pthread_mutex_lock(&data->data_mtx);
-        data->end_simulation = 1;
-        ft_handle_mutex_error(action, result);
-		pthread_mutex_unlock(&data->data_mtx);
-
-	}
-//	printf("in the ft_handle_mutexes, after the validation\n");
-	return (result);
+	philo = (t_philo *)arg;
+	data = philo->data;
+	ft_philo_cycle(philo, data);
+	return (NULL);
 }
 
-/**
- * Function to handle safately the different actions
- * we can do to a thread
- */
-int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
-		t_code action, t_data *data)
+void	*ft_monitor_starter(void *arg)
 {
-	int	result;
+	t_data	*data;
 
-	result = 0;
-	if (action == CREATE)
-		result = pthread_create(thread, NULL, routine, arg);
-	else if (action == JOIN)
-		result = pthread_join(*thread, NULL);
-	else if (action == DETEACH)
-		result = pthread_detach(*thread);
-	if (result != 0)
-	{
-		pthread_mutex_lock(&data->data_mtx);
-        data->end_simulation = 1;
-		ft_handle_thread_error(action, result);
-		pthread_mutex_unlock(&data->data_mtx);
-	}
-	return (result);
+	data = (t_data *)arg;
+	ft_monitor_process(data);
+	return (NULL);
 }
-
 /**
  * Function to get the current time
  * of the system
  * TODO: is this correct??
  */
-long	ft_get_time_in_ms(void)
+long	ft_get_time(void)
 {
 	struct timeval	tv;
 	long			time_in_ms;
@@ -84,13 +51,13 @@ void    ft_print_action(t_data *data,t_philo *philo, t_code code)
     ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
     ft_handle_mutexes(data, &data->print_mtx, LOCK);
 	if(code == THINKING)
-        printf("\033[32m%ld, philo %d is thinking\033[0m\n", ft_get_time_in_ms(), philo->id);
+        printf("\033[32m%ld, philo %d is thinking\033[0m\n", ft_get_time(), philo->id);
     else if(code == EATING)
-        printf("\033[33m%ld, philo %d is eating\033[0m\n", ft_get_time_in_ms(), philo->id);
+        printf("\033[33m%ld, philo %d is eating\033[0m\n", ft_get_time(), philo->id);
     else if(code == SLEEPING)
-        printf("\033[34m%ld, philo %d is sleeping\033[0m\n", ft_get_time_in_ms(), philo->id);
+        printf("\033[34m%ld, philo %d is sleeping\033[0m\n", ft_get_time(), philo->id);
     else
-        printf("\033[36m%ld, philo %d has taken a fork\033[0m\n", ft_get_time_in_ms(), philo->id);
+        printf("\033[36m%ld, philo %d has taken a fork\033[0m\n", ft_get_time(), philo->id);
     ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 }
 
@@ -103,25 +70,18 @@ void    ft_print_action(t_data *data,t_philo *philo, t_code code)
  */
 int	ft_should_stop(t_data *data, t_philo *philo)
 {
-	//TODO: handle the case a philo is full
 	int flag;
 
 	flag = 0;
 	ft_handle_mutexes(data,&data->data_mtx,LOCK);
 	if(data->end_simulation == 1)
-	{
 		flag = 1;
-		printf("a philo has died! (ft_should_stop)\n");
-	}
 	ft_handle_mutexes(data,&data->data_mtx,UNLOCK);
 	if(!flag)
 	{
 		ft_handle_mutexes(data,&philo->data_mtx,LOCK);
 		if(philo->is_full)
-		{
 			flag = 1;
-			printf("the philo %d, is full! (ft_should_stop)\n",philo->id);
-		}
 		ft_handle_mutexes(data,&philo->data_mtx,UNLOCK);
 	}
 	return (flag);

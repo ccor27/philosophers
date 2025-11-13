@@ -161,14 +161,14 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 	{
 		philo = &data->philos[i];
 		ft_handle_mutexes(data, &philo->data_mtx, LOCK);
-		time_since_last_meal = ft_get_time_in_ms() - philo->time_last_meal;
+		time_since_last_meal = ft_get_time() - philo->time_last_meal;
 		ft_handle_mutexes(data, &philo->data_mtx, UNLOCK);
 		if (time_since_last_meal > time_to_die)
 		{
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
 			ft_handle_mutexes(data, &data->print_mtx, LOCK);
-			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time_in_ms(), philo->id);
+			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time(), philo->id);
 			ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 			ft_handle_mutexes(data, &data->data_mtx, UNLOCK);
 			return (1);

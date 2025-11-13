@@ -98,7 +98,7 @@ int ft_handle_mutexes(t_data *data, pthread_mutex_t *mutex,
 					  t_code action);
 int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
 		t_code action, t_data *data);
-long ft_get_time_in_ms(void);
+long ft_get_time(void);
 void    ft_print_action(t_data *data,t_philo *philo, t_code code);
 int		ft_should_stop(t_data *data, t_philo *philo);
 // error_handler

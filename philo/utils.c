@@ -61,7 +61,7 @@ int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
  * of the system
  * TODO: is this correct??
  */
-long	ft_get_time_in_ms(void)
+long	ft_get_time(void)
 {
 	struct timeval	tv;
 	long			time_in_ms;
@@ -77,13 +77,13 @@ void    ft_print_action(t_data *data,t_philo *philo, t_code code)
 {
         ft_handle_mutexes(data, &data->print_mtx, LOCK);
 		if(code == THINKING)
-            printf("\033[32m%ld, philo %d is thinking\033[0m\n", ft_get_time_in_ms(), philo->id);
+            printf("\033[32m%ld, philo %d is thinking\033[0m\n", ft_get_time(), philo->id);
         else if(code == EATING)
-            printf("\033[33m%ld, philo %d is eating\033[0m\n", ft_get_time_in_ms(), philo->id);
+            printf("\033[33m%ld, philo %d is eating\033[0m\n", ft_get_time(), philo->id);
         else if(code == SLEEPING)
-            printf("\033[34m%ld, philo %d is sleeping\033[0m\n", ft_get_time_in_ms(), philo->id);
+            printf("\033[34m%ld, philo %d is sleeping\033[0m\n", ft_get_time(), philo->id);
         else
-            printf("\033[36m%ld, philo %d has taken a fork\033[0m\n", ft_get_time_in_ms(), philo->id);
+            printf("\033[36m%ld, philo %d has taken a fork\033[0m\n", ft_get_time(), philo->id);
         ft_handle_mutexes(data, &data->print_mtx, UNLOCK);
 }
 
