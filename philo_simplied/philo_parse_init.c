@@ -57,6 +57,7 @@ void	ft_init_data(t_data *data)
 	i = 0;
 	while (i < data->philo_number)
 		ft_init_philo(data, i++);
+	ft_init_monitor(data);
 	ft_join_threads(data);
 }
 
@@ -75,7 +76,6 @@ void	ft_init_philo(t_data *data, int i)
 	philo->meals_counter = 0;
 	philo->is_full = 0;
 	philo->time_last_meal = ft_get_time();
-	philo->start_simulation = ft_get_time();
 	philo->data = data;
 	if (ft_handle_mutexes(data, &philo->data_mtx, INIT) != 0)
 		ft_free_and_exit(NULL, data, 1);

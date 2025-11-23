@@ -50,6 +50,7 @@ typedef struct s_data
 	long				time_to_sleep;
 	long number_of_meals;      // this is optional, so if this is
 								//-1 that meas that there is not limit of meals
+	//long				start_simulation;
 	long end_simulation;       // to know when a philo dies or all are full,
 		//initially -1
 	pthread_mutex_t data_mtx;  // mutex to avoid race condition in data
@@ -66,7 +67,6 @@ struct					s_philo
 	int					id;
 	long				meals_counter;
 	int					is_full;
-	long				start_simulation;
 	long time_last_meal;      // to determine if a philo died between meals
 	pthread_mutex_t data_mtx; // mutex to control race condition
 	t_fork *left_fork;        // left fork that the philo could use

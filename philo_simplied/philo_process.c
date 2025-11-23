@@ -26,13 +26,21 @@ int	ft_routine(pthread_mutex_t *f1_mtx, pthread_mutex_t *f2_mtx, t_philo *philo,
 	ft_handle_mutexes(data, f2_mtx, UNLOCK);
 	if (ft_should_stop(data, philo))
 		return (1);
-	ft_think(data, philo);
+	ft_sleep(data, philo);
 	if (ft_should_stop(data, philo))
 		return (1);
-	ft_sleep(data, philo);
+	ft_think(data, philo);
 	return (0);
 }
 
+void	ft_routine_for_one(pthread_mutex_t *f1_mtx, t_philo *philo,
+		t_data *data)
+{
+	ft_handle_mutexes(data,f1_mtx,LOCK);
+	ft_print_action(data,philo,TAKING);
+	usleep(data->time_to_die * 1000);
+	ft_handle_mutexes(data,f1_mtx,UNLOCK);
+}
 /**
  * Function to handle the life cycle of a philo
  * Basically here we assign the forks to the philo,
@@ -56,6 +64,11 @@ void	ft_philo_cycle(t_philo *philo, t_data *data)
 		f1_mtx = &philo->right_fork->mutex;
 		f2_mtx = &philo->left_fork->mutex;
 	}
+	if(data->philo_number == 1)
+	{
+		ft_routine_for_one(f1_mtx, philo, data);
+		return ;
+	}
 	if (philo->id % 2 == 0)
 		usleep((data->time_to_eat / 2) * 1000);
 	while (1)
@@ -71,6 +84,7 @@ void	ft_philo_cycle(t_philo *philo, t_data *data)
  */
 void	ft_monitor_process(t_data *data)
 {
+
 	while (1)
 	{
 		ft_handle_mutexes(data, &data->data_mtx, LOCK);
@@ -90,7 +104,7 @@ void	ft_monitor_process(t_data *data)
 		}
 		if (ft_check_philo_death(data, data->time_to_die))
 			break ;
-		usleep(1000);
+		usleep(500);
 	}
 }
 
@@ -116,6 +130,7 @@ int	ft_check_philo_death(t_data *data, long time_to_die)
 			ft_handle_mutexes(data, &data->data_mtx, LOCK);
 			data->end_simulation = 1;
 			ft_handle_mutexes(data, &data->print_mtx, LOCK);
+			//printf("last meal: %ld, time to die: %ld", time_since_last_meal, time_to_die);
 			printf("\033[41m%ld, philo %d died\033[0m\n", ft_get_time(),
 				philo->id);
 			ft_handle_mutexes(data, &data->print_mtx, UNLOCK);

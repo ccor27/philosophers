@@ -27,6 +27,7 @@ void	ft_eat(t_data *data, t_philo *philo)
 void	ft_think(t_data *data, t_philo *philo)
 {
 	ft_print_action(data, philo, THINKING);
+	//usleep(data->time_to_eat / 2 * 1000);
 	usleep(200);
 }
 
