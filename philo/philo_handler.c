@@ -1,7 +1,11 @@
 #include "philo.h"
 
 /**
- * Function to handle the errors of mutexes
+ * Function to handle the errors that could occur in mutexes
+ * in any case, here we just print the error
+ * specifing the case.
+ * The function that call this one should  handle 
+ * the unlock, free and exit
  */
 void	ft_handle_mutex_error(t_code action, int result_code)
 {
@@ -33,7 +37,11 @@ void	ft_handle_mutex_error(t_code action, int result_code)
 }
 
 /**
- * Function to handle the errors of threads (pthreads)
+ * Function to handle the errors that could occur in threads
+ * in any case, here we just print the error
+ * specifing the case.
+ * The function that call this one should  handle 
+ * the unlock, free and exit
  */
 void	ft_handle_thread_error(t_code action, int result_code)
 {
@@ -45,8 +53,6 @@ void	ft_handle_thread_error(t_code action, int result_code)
 		action_str = "creating";
 	else if (action == JOIN)
 		action_str = "joining";
-	else if (action == DETEACH)
-		action_str = "detaching";
 	else
 		action_str = "unknown";
 	if (result_code == 11)
@@ -63,8 +69,10 @@ void	ft_handle_thread_error(t_code action, int result_code)
 }
 
 /**
- * Function to handle safately the different actions
- * we can do to a mutex
+ * Function that handle the actions of the mutexes
+ * basically if any action fails, we set the end simulation to 1
+ * call the ft_handle_mutex_error, the function that call this one
+ * should call the free_and_exit
  */
 int	ft_handle_mutexes(t_data *data, pthread_mutex_t *mutex, t_code action)
 {
@@ -90,8 +98,10 @@ int	ft_handle_mutexes(t_data *data, pthread_mutex_t *mutex, t_code action)
 }
 
 /**
- * Function to handle safately the different actions
- * we can do to a thread
+ * Function that handle the actions of the threads
+ * basically here we just return the value of the action
+ * the function that call this one should handle the unlock 
+ * and free_and_exit	
  */
 int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
 		t_code action)
@@ -103,35 +113,5 @@ int	ft_handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg,
 		result = pthread_create(thread, NULL, routine, arg);
 	else if (action == JOIN)
 		result = pthread_join(*thread, NULL);
-	else if (action == DETEACH)
-		result = pthread_detach(*thread);
 	return (result);
-}
-
-/**
- * Function that will check if all the philosophers
- * have eaten all their meals
- */
-int	ft_check_all_full(t_data *data)
-{
-	int i;
-	int all_full;
-	t_philo *philo;
-
-	if (data->number_of_meals == -1)
-		return (0);
-	i = 0;
-	all_full = 1;
-	while (i < data->philo_number)
-	{
-		philo = &data->philos[i];
-		ft_handle_mutexes(data, &philo->data_mtx, LOCK);
-		if (!philo->is_full)
-			all_full = 0;
-		ft_handle_mutexes(data, &philo->data_mtx, UNLOCK);
-		if (!all_full)
-			return (0);
-		i++;
-	}
-	return (1);
 }

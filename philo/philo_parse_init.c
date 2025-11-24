@@ -1,9 +1,13 @@
 #include "philo.h"
 
 /**
- * Function to parse the arguments and store them
- * into data struct
- * ./philo 5 800 200 200 [5]
+ * Function to parse and store the values from args
+ * Basically here: 
+ * 		- convert the string numbers to long
+ * 		- validate if we get a number of meals (if we
+ * 			no, we'll use it as flag)
+ * 		- validate we get at least one philo
+ * 		- validate times are correct (grater than 60)
  */
 void	ft_parse_and_store(int argc, t_data *data, char **argv)
 {
@@ -11,7 +15,6 @@ void	ft_parse_and_store(int argc, t_data *data, char **argv)
 	data->time_to_die = ft_atol(argv[2]);
 	data->time_to_eat = ft_atol(argv[3]);
 	data->time_to_sleep = ft_atol(argv[4]);
-	data->number_of_meals = -1;
 	if (argc == 6)
 	{
 		data->number_of_meals = ft_atol(argv[5]);
@@ -29,8 +32,12 @@ void	ft_parse_and_store(int argc, t_data *data, char **argv)
 }
 
 /**
- * Function to initialize the structs
- * forks and philos
+ * Function to reserved memory for philos and forks,
+ * then to create the data's mutexes (data and print), then
+ * init the thread for each philo and assing the forks
+ * and finally 
+ * call the functions to init the philos, monitor and join the 
+ * join the threads
  */
 void	ft_init_data(t_data *data)
 {
@@ -62,9 +69,9 @@ void	ft_init_data(t_data *data)
 }
 
 /**
- * Function to initialize a philo
- * and handlig the case of any error
- * in  both of mutex and thread
+ * Auxiliar function to init philos,
+ * setting its data and creating the thread sending 
+ * the function that thread will be start.
  */
 void	ft_init_philo(t_data *data, int i)
 {
@@ -94,8 +101,8 @@ void	ft_init_philo(t_data *data, int i)
 }
 
 /**
- * Function to create and join the monitor thread
- * handling the possible cases of error
+ * Function to init the monitor and join it before the others
+ * threads
  */
 void	ft_init_monitor(t_data *data)
 {
@@ -124,8 +131,7 @@ void	ft_init_monitor(t_data *data)
 }
 
 /**
- * Function to join all the threads
- * and handling the case of any error
+ * Function to join the philos thread
  */
 void	ft_join_threads(t_data *data)
 {

@@ -1,0 +1,28 @@
+Command to get the outputs that match in order to know if the number of meals was corrected
+ ./philo 5 800 200 200 7 | grep -e "1 is eating" -e "2 is eating" -e "3 is eating" -e "4 is eating" -e "5 is eating"
+
+
+To validate leaks
+valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --trace-children=yes ./philo 2 800 200 200 7 | grep -e "1 is eating" -e "2 is eating" -e "3 is eating" -e "4 is eating" -e "5 is eating"
+
+To validate if the specific philo eats the specific amount we specified
+./philo 5 800 200 200 7 | grep "5 is eating" | wc -l
+
+To test philos with a number of meals, in this case we should see 35, because it is the times the "is eating" phrase appears
+./philo 5  800 200 200 7 | grep "is eating" | wc -l
+
+
+test mandatory
+- 1 800 200 200 // should no eat
+- 5 800 200 200 // no one should die
+- 5 800 200 200 7 //no one should die and all should eat 7 times
+- 4 410 200 200 //no one should die
+- 4 310 200 100 //one should die
+
+
+Things to have in mind:
+
+- valgrind slow the program because of its internal processes, so 
+    we have to increase the time of die in order to avoid unexpected
+    dies, however if we do not increase the time, the evaluator should 
+    be aware of that and just validate that valgrind return 0 leaks
